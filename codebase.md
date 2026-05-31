@@ -12,27 +12,66 @@
 /
 ├── app/
 │   ├── Controllers/          # Application controllers (App\Controllers namespace)
+│   │   ├── AuthController.php
+│   │   ├── CriteriaController.php
+│   │   ├── DashboardController.php
+│   │   ├── ProfileController.php
+│   │   ├── SessionController.php
+│   │   ├── SupplierController.php
+│   │   └── UserController.php
+│   ├── Middleware/
+│   │   └── AuthMiddleware.php
 │   └── Models/               # Application models (App\Models namespace)
+│       └── User.php
 ├── core/
 │   ├── Autoload.php          # Custom PSR-4-style autoloader
 │   ├── Controller.php        # Base controller with view rendering
 │   ├── Database.php          # PDO connection singleton
 │   ├── Env.php               # Native .env file parser
 │   ├── Model.php             # Base model with chainable query builder
+│   ├── Request.php           # HTTP request data accessor
+│   ├── Response.php          # HTTP response helpers (redirect, json)
 │   ├── Router.php            # HTTP request router
-│   └── Seeder.php            # Seeder interface (enforces run() method)
+│   ├── Session.php           # Flash message & session wrapper
+│   ├── Seeder.php            # Seeder interface (enforces run() method)
+│   └── Uuid.php              # UUID v4 generator & validator
 ├── database/
 │   ├── migrations/           # Migration files (YYYYMMDD_HHMMSS_description.php)
 │   └── seeders/              # Database seeder classes
 ├── public/
-│   ├── assets/               # Static assets (CSS, JS, images)
-│   └── index.php             # Application entry point
-├── views/                    # PHP view templates
+│   ├── assets/               # Static assets (CSS, JS, images) — gitignored
+│   ├── uploads/              # User uploads (avatars, attachments) — gitignored
+│   └── index.php             # Application entry point & route definitions
+├── views/
+│   ├── auth/
+│   │   ├── login.php
+│   │   └── profile.php
+│   ├── criteria/
+│   │   └── index.php
+│   ├── dashboard/
+│   │   └── index.php
+│   ├── layouts/
+│   │   ├── footer.php
+│   │   ├── master.php
+│   │   └── sidebar.php
+│   ├── partials/
+│   │   └── flash-messages.php
+│   ├── sessions/
+│   │   ├── create.php
+│   │   ├── index.php
+│   │   ├── input.php
+│   │   └── result.php
+│   ├── suppliers/
+│   │   └── index.php
+│   └── users/
+│       └── index.php
 ├── .env                      # Environment variables (gitignored)
 ├── .env.example              # Environment variable template
+├── .gitignore                # Git ignore rules
 ├── codebase.md               # This blueprint document
-├── make_migration.php         # Migration file generator
+├── make_migration.php        # Migration file generator
 ├── migrate.php               # CLI migration runner
+├── reset_database.php        # Database reset script (drops all tables)
 └── seed.php                  # CLI seeder runner
 ```
 
@@ -130,11 +169,48 @@ Base model class with a chainable query builder. All application models should e
 |--------|---------|-------------|
 | `get()` | `array` | Execute SELECT and return all matching rows. |
 | `first()` | `?array` | Execute SELECT with LIMIT 1, return single row or null. |
-| `insert(array $data)` | `int\|string` | Insert a row. Returns last insert ID. |
+| `insert(array $data)` | `int\|string` | Insert a row. Returns last insert ID. Handles UUID fallback for PostgreSQL. |
 | `update(array $data)` | `bool` | Update matching rows. Requires prior `where()` calls. |
 | `delete()` | `bool` | Delete matching rows. Requires prior `where()` calls. |
 
 **Security:** All queries use PDO prepared statements with named parameter binding. Query state resets after each execution.
+
+### `core/Request.php`
+
+HTTP request data accessor. Provides clean access to `$_POST`, `$_GET`, and uploaded files.
+
+**Methods:**
+- `post(string $key, mixed $default = null)` — Returns a POST value or default.
+- `get(string $key, mixed $default = null)` — Returns a GET value or default.
+- `file(string $key)` — Returns a file from `$_FILES`.
+- `all()` — Returns merged `$_POST` and `$_GET`.
+
+### `core/Response.php`
+
+HTTP response helpers.
+
+**Static Methods:**
+- `redirect(string $url)` — Sends a `Location` header and exits.
+- `json(array $data, int $status = 200)` — Outputs JSON with appropriate headers.
+
+### `core/Session.php`
+
+Session & flash message wrapper.
+
+**Static Methods:**
+- `get(string $key, mixed $default = null)` — Returns a session value.
+- `set(string $key, mixed $value)` — Sets a session value.
+- `getFlash(string $key)` — Retrieves and clears a flash message.
+- `setFlash(string $key, mixed $value)` — Sets a flash message.
+- `destroy()` — Destroys the session.
+
+### `core/Uuid.php`
+
+UUID v4 generator and validator.
+
+**Static Methods:**
+- `generate(): string` — Generates a random UUID v4 string.
+- `isValid(string $uuid): bool` — Validates a UUID string format.
 
 ### `core/Env.php`
 
@@ -219,19 +295,39 @@ class SupplierSeeder extends Seeder
 
 ---
 
+## Middleware Spec
+
+### `app/Middleware/AuthMiddleware.php`
+
+Authentication guard middleware. Applied to protected routes in `public/index.php`.
+
+**Behavior:**
+1. Checks if `user_id` exists in session (via `Core\Session::get('user_id')`).
+2. If not authenticated, sets a flash error and redirects to `/login`.
+3. If authenticated, allows the request to proceed.
+
+**Usage in routes:**
+```php
+$router->get('/dashboard', [DashboardController::class, 'index'], [AuthMiddleware::class]);
+```
+
+---
+
 ## Routing Spec
 
 Routes are defined in `public/index.php` before calling `$router->dispatch()`.
 
 **Example:**
 ```php
-$router->get('/', [HomeController::class, 'index']);
-$router->get('/users', [UserController::class, 'index']);
-$router->get('/users/{id}', [UserController::class, 'show']);
-$router->post('/users', [UserController::class, 'store']);
+$router->get('/', [DashboardController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/users', [UserController::class, 'index'], [AuthMiddleware::class]);
+$router->get('/users/{id}', [UserController::class, 'show'], [AuthMiddleware::class]);
+$router->post('/users', [UserController::class, 'store'], [AuthMiddleware::class]);
 ```
 
 The router matches the HTTP method and URI path. Named parameters like `{id}` are captured via regex and passed as arguments to the controller method.
+
+Third parameter (array) is an optional middleware chain applied before the controller method.
 
 ---
 
@@ -256,6 +352,8 @@ php migrate.php
 5. For each new migration: starts a transaction, executes the SQL, logs the migration name, and commits. Rolls back on failure.
 
 > **CRITICAL WARNING:** Because migrations use raw SQL, developers MUST ensure the SQL dialect (MySQL vs PostgreSQL) matches the current `DB_CONNECTION`. For example, primary keys use `AUTO_INCREMENT` in MySQL but `SERIAL` in PostgreSQL. MySQL-specific clauses like `ENGINE=InnoDB` and `CHARSET=utf8mb4` are not valid in PostgreSQL and will cause migration failures.
+>
+> **UUID Primary Keys:** All application tables use UUID (`gen_random_uuid()` on PostgreSQL, `UUID()` on MySQL) for primary keys. Controllers must generate UUIDs via `Core\Uuid::generate()` before inserting records.
 
 ### Migration Generator: `make_migration.php`
 
@@ -316,14 +414,30 @@ DB_PORT=3306
 DB_NAME=my_database
 DB_USER=root
 DB_PASS=
+
+ASSET_URL=http://localhost/assets
 ```
 
 **`DB_CONNECTION` values:** `mysql` or `pgsql`.
+
+**`ASSET_URL`** — Base URL for static assets (CSS, JS, images). Used in views for asset paths.
 
 ### Files
 
 - `.env` — Actual environment values. **Must be gitignored.**
 - `.env.example` — Template with blank/dummy values. Committed to version control.
+
+---
+
+## Git Ignore Policy
+
+See `.gitignore` for the complete list. Key exclusions:
+
+- `.env` — Environment secrets.
+- `public/assets/` — Third-party asset bundles (Metronic). Extract manually on each environment.
+- `public/uploads/` — User-generated files (avatars, attachments).
+- `vendor/`, `node_modules/` — Dependencies (if ever added in the future).
+- IDE folders (`.idea/`, `.vscode/`).
 
 ---
 

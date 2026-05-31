@@ -1,0 +1,121 @@
+// SPK Pemilihan Supplier Ban Bandara — DBML Schema
+// Paste this into https://dbdiagram.io/d
+
+Table users {
+  id uuid [primary key]
+  full_name varchar [not null]
+  email varchar [not null, unique]
+  username varchar [not null, unique]
+  password varchar [not null]
+  avatar varchar [null]
+  phone_number varchar [null]
+  role varchar [not null, default: 'staff']
+  last_login timestamp [null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table criteria {
+  id uuid [primary key]
+  criteria_code varchar [not null, unique]
+  criteria_name varchar [not null]
+  description text [null]
+  type varchar [not null]
+  created_by uuid [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table suppliers {
+  id uuid [primary key]
+  supplier_code varchar [not null, unique]
+  company_name varchar [not null]
+  pic_name varchar [not null]
+  pic_email varchar [not null]
+  pic_phone varchar [null]
+  tax_id varchar [null]
+  full_address text [null]
+  tire_category varchar [null]
+  joined_date date [null]
+  created_by uuid [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table evaluation_sessions {
+  id uuid [primary key]
+  session_code varchar [not null, unique]
+  title varchar [not null]
+  description text [null]
+  start_date date [not null]
+  end_date date [not null]
+  status varchar [not null, default: 'draft']
+  created_by uuid [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table session_criteria {
+  id uuid [primary key]
+  session_id uuid [not null]
+  criteria_id uuid [not null]
+  weight decimal [not null, default: 0.00]
+
+  indexes {
+    (session_id, criteria_id) [unique]
+  }
+}
+
+Table session_suppliers {
+  id uuid [primary key]
+  session_id uuid [not null]
+  supplier_id uuid [not null]
+  readiness_notes text [null]
+
+  indexes {
+    (session_id, supplier_id) [unique]
+  }
+}
+
+Table session_scores {
+  id uuid [primary key]
+  session_id uuid [not null]
+  supplier_id uuid [not null]
+  criteria_id uuid [not null]
+  raw_score decimal [not null, default: 0.00]
+
+  indexes {
+    (session_id, supplier_id, criteria_id) [unique]
+  }
+}
+
+Table session_evaluations {
+  id uuid [primary key]
+  session_id uuid [not null]
+  supplier_id uuid [not null]
+  criteria_id uuid [not null]
+  raw_value decimal [not null, default: 0.00]
+
+  indexes {
+    (session_id, supplier_id, criteria_id) [unique]
+  }
+}
+
+// Foreign Key Relationships
+Ref: criteria.created_by > users.id [delete: restrict, update: cascade]
+Ref: suppliers.created_by > users.id [delete: restrict, update: cascade]
+Ref: evaluation_sessions.created_by > users.id [delete: restrict, update: cascade]
+
+Ref: session_criteria.session_id > evaluation_sessions.id [delete: cascade, update: cascade]
+Ref: session_criteria.criteria_id > criteria.id [delete: restrict, update: cascade]
+
+Ref: session_suppliers.session_id > evaluation_sessions.id [delete: cascade, update: cascade]
+Ref: session_suppliers.supplier_id > suppliers.id [delete: restrict, update: cascade]
+
+Ref: session_scores.session_id > evaluation_sessions.id [delete: cascade, update: cascade]
+Ref: session_scores.supplier_id > suppliers.id [delete: restrict, update: cascade]
+Ref: session_scores.criteria_id > criteria.id [delete: restrict, update: cascade]
+
+Ref: session_evaluations.session_id > evaluation_sessions.id [delete: cascade, update: cascade]
+Ref: session_evaluations.supplier_id > suppliers.id [delete: restrict, update: cascade]
+Ref: session_evaluations.criteria_id > criteria.id [delete: restrict, update: cascade]

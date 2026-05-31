@@ -111,22 +111,60 @@ This project is built on a custom native PHP MVC semi-framework. For deep techni
 
 ---
 
+## Database Schema
+
+Berikut adalah diagram Entity Relationship (ERD) yang menggambarkan struktur database sistem SPK Pemilihan Supplier Ban Bandara:
+
+![Database Schema](schema-spk-smart.png)
+
+### Penjelasan Skema
+
+Database terdiri dari **8 tabel utama** yang saling terhubung melalui foreign key:
+
+- **`users`** — Menyimpan data pengguna sistem dengan peran (admin, staff, pimpinan).
+- **`criteria`** — Master data kriteria penilaian SMART (contoh: Harga, Kualitas) beserta tipe Benefit/Cost.
+- **`suppliers`** — Master data supplier ban bandara lengkap dengan informasi PIC dan alamat.
+- **`evaluation_sessions`** — Sesi evaluasi SPK yang mencakup periode waktu dan status (draft → berlangsung → selesai).
+- **`session_criteria`** — Relasi many-to-many antara sesi dan kriteria, menyimpan bobot kustom per sesi.
+- **`session_suppliers`** — Relasi many-to-many antara sesi dan supplier yang dipilih untuk dievaluasi.
+- **`session_scores`** — Tabel legacy untuk menyimpan skor mentah (opsional).
+- **`session_evaluations`** — Menyimpan nilai evaluasi mentah (raw value) setiap supplier pada setiap kriteria dalam satu sesi.
+
+Semua tabel menggunakan **UUID** sebagai primary key untuk mendukung skalabilitas dan keamanan distribusi data.
+
+---
+
 ## Project Structure
 
 ```
 /
 ├── app/
-│   ├── Controllers/          # Application controllers
-│   └── Models/               # Application models
-├── core/                     # Framework engine (Router, DB, ORM, etc.)
-├── database/migrations/      # Database migration files
-├── public/                   # Web root (entry point, assets)
+│   ├── Controllers/          # Application controllers (Auth, Criteria, Dashboard, Profile, Session, Supplier, User)
+│   ├── Middleware/            # AuthMiddleware
+│   └── Models/              # Application models (User)
+├── core/                     # Framework engine (Autoload, Router, DB, Request, Response, Session, UUID, etc.)
+├── database/
+│   ├── migrations/           # Database migration files
+│   └── seeders/              # Database seeders (User, Criteria, Supplier)
+├── public/
+│   ├── assets/              # Static assets (CSS, JS, images)
+│   ├── uploads/             # User uploads
+│   └── index.php            # Application entry point & routes
 ├── views/                    # PHP view templates
-├── .env                      # Environment configuration
+│   ├── auth/                # Login, Profile
+│   ├── criteria/            # Kriteria CRUD
+│   ├── dashboard/           # Dashboard index
+│   ├── layouts/             # Master, Footer, Sidebar
+│   ├── sessions/            # Sesi: index, create, input, result
+│   ├── suppliers/           # Supplier CRUD
+│   └── users/               # User management
+├── .env                      # Environment configuration (gitignored)
 ├── .env.example              # Environment template
+├── .gitignore                # Git ignore rules
 ├── codebase.md               # Technical blueprint
 ├── make_migration.php        # Migration generator
 ├── migrate.php               # Migration runner
+├── reset_database.php        # Database reset script
 └── README.md
 ```
 
