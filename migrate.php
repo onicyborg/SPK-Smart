@@ -59,7 +59,7 @@ if (empty($newMigrations)) {
     exit(0);
 }
 
-$insertStmt = $db->prepare("INSERT INTO migrations (migration_name) VALUES (:name)");
+$insertStmt = $db->prepare("INSERT INTO migrations (id, migration_name) VALUES (:id, :name)");
 
 foreach ($newMigrations as $file) {
     $migrationName = basename($file);
@@ -70,7 +70,10 @@ foreach ($newMigrations as $file) {
 
     try {
         $db->exec($sql);
-        $insertStmt->execute([':name' => $migrationName]);
+        $insertStmt->execute([
+            ':id'   => \Core\Uuid::generate(),
+            ':name' => $migrationName,
+        ]);
 
         echo "  OK\n";
     } catch (\Throwable $e) {
