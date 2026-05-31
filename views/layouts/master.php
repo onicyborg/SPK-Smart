@@ -81,11 +81,7 @@
 
                     <div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
                         <?php
-                            $homeUrl = match (\Core\Session::get('role')) {
-                                'admin' => '/admin/dashboard',
-                                'pm'    => '/pm/dashboard',
-                                default => '/login',
-                            };
+                            $homeUrl = '/dashboard';
                         ?>
                         <a href="<?= htmlspecialchars($homeUrl) ?>" class="d-flex align-items-center">
                             <img alt="Logo" src="<?= $_ENV['ASSET_URL'] ?>/assets/media/logos/default-small.svg"
