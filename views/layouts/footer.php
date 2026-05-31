@@ -6,7 +6,7 @@
                         id="kt_app_footer">
                         <div class="text-gray-700 order-2 order-md-1 w-100 text-center">
                             <span class="text-muted fw-semibold me-1">&copy; <?= date('Y') ?></span>
-                            <span class="text-gray-600 fw-semibold">ProTrack</span>
+                            <span class="text-gray-600 fw-semibold">SPK-Smart</span>
                         </div>
                     </div>
                 </div>

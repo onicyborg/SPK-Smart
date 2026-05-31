@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <?php if (isset($pageTitle)): ?>
-        <title>ProTrack - <?= htmlspecialchars($pageTitle) ?></title>
+        <title>SPK-Smart - <?= htmlspecialchars($pageTitle) ?></title>
     <?php else: ?>
-        <title>ProTrack - Project Tracking System</title>
+        <title>SPK-Smart - Project Tracking System</title>
     <?php endif; ?>
 
     <link rel="shortcut icon" href="<?= $_ENV['ASSET_URL'] ?>/assets/media/logos/favicon.ico" />
@@ -91,7 +91,7 @@
                             <img alt="Logo" src="<?= $_ENV['ASSET_URL'] ?>/assets/media/logos/default-small.svg"
                                 class="h-30px" />
                             <span class="ms-3 fw-bold fs-4 d-none d-sm-inline text-gray-800">
-                                ProTrack
+                                SPK-Smart
                             </span>
                         </a>
                     </div>
@@ -157,7 +157,7 @@
                         <a href="<?= htmlspecialchars($homeUrl) ?>" class="d-flex align-items-center">
                             <img alt="Logo" src="<?= $_ENV['ASSET_URL'] ?>/assets/media/logos/default-small.svg"
                                 class="h-25px app-sidebar-logo-default" />
-                            <span class="ms-3 fw-semibold text-gray-800 fs-6 sidebar-title">ProTrack</span>
+                            <span class="ms-3 fw-semibold text-gray-800 fs-6 sidebar-title">SPK-Smart</span>
                         </a>
                     </div>
 
