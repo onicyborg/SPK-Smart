@@ -1,0 +1,42 @@
+# Environment & Secrets
+.env
+*.env.local
+*.env.backup
+
+# Dependencies (jika ada)
+vendor/
+node_modules/
+
+# Metronic / Frontend Assets (third-party, large)
+public/assets/
+
+# User Uploads
+public/uploads/
+
+# Cache, Logs, Temp
+*.log
+storage/cache/
+storage/logs/
+tmp/
+temp/
+*.tmp
+
+# IDE & Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Database dump
+*.sql
+*.sqlite
+*.sqlite3
+
+# Backup files
+*.bak
+*.old
