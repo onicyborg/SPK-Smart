@@ -1,0 +1,18 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Arahkan Authorization Header agar sistem login berjalan lancar
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Jika yang diakses adalah file atau folder fisik (seperti CSS/JS/Gambar), biarkan diakses langsung
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+
+    # Jika bukan, belokkan semua request ke index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
