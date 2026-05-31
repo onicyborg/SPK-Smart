@@ -4,6 +4,17 @@ A web-based Decision Support System utilizing the **SMART** (Simple Multi Attrib
 
 ---
 
+## Features
+
+- **Dashboard Eksekutif**: Ringkasan data statistik dan aktivitas terbaru dalam satu tampilan.
+- **Manajemen Master Data**: CRUD untuk Supplier Ban Bandara dan Kriteria Penilaian (dengan penentuan bobot & tipe Benefit/Cost).
+- **Manajemen User**: Sistem autentikasi dan peran pengguna (Admin, Staff, Pimpinan).
+- **Sesi Penilaian (SPK)**: Pembuatan sesi evaluasi menggunakan form Wizard/Stepper.
+- **Mesin Perhitungan SMART**: Kalkulasi otomatis nilai utility, normalisasi bobot, dan perankingan hasil akhir secara transparan di layar.
+- **UI/UX Modern**: Dibangun menggunakan template Metronic (Bootstrap 5).
+
+---
+
 ## Prerequisites
 
 - **PHP 8.1** or higher
@@ -50,9 +61,17 @@ DB_PASS=root
 php migrate.php
 ```
 
-This creates all required tables: `users`, `criteria`, `suppliers`, `evaluation_sessions`, `session_criteria`, `session_suppliers`, and `session_scores`.
+This creates all required tables: `users`, `criteria`, `suppliers`, `evaluation_sessions`, `session_criteria`, `session_suppliers`, `session_scores`, and `session_evaluations`.
 
-### Step 4: Start Development Server
+### Step 4: Run Seeders
+
+```bash
+php seed.php
+```
+
+This command populates the database with initial dummy data for **Users**, **Suppliers**, and **Criteria**, so you can start using the application immediately.
+
+### Step 5: Start Development Server
 
 ```bash
 php -S localhost:8080 -t public/
@@ -62,12 +81,25 @@ Open `http://localhost:8080` in your browser.
 
 ---
 
+## Default Login Credentials
+
+The following accounts are automatically created after running `php seed.php`:
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | `admin` | `Qwerty123*` |
+| Staff | `staff` | `Qwerty123*` |
+| Pimpinan | `pimpinan` | `Qwerty123*` |
+
+---
+
 ## Available CLI Commands
 
 | Command | Description |
 |---------|-------------|
 | `php migrate.php` | Execute all pending database migrations in a transaction. Tracks executed migrations to avoid duplicates. |
 | `php make_migration.php <name>` | Generate a new timestamped migration file boilerplate in `database/migrations/`. Example: `php make_migration.php create_products_table` |
+| `php seed.php` | Execute all seeders in `database/seeders/` to populate the database with initial dummy data. |
 
 ---
 
