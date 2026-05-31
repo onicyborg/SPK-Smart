@@ -1,5 +1,7 @@
 # SPK Pemilihan Supplier Ban (Native PHP Framework)
 
+**Live URL:** [https://spk-smart.skripsian.site](https://spk-smart.skripsian.site)
+
 A web-based Decision Support System utilizing the **SMART** (Simple Multi Attribute Rating Technique) method for selecting airport tire suppliers. Built on a custom lightweight PHP MVC framework with **zero external dependencies** — no Composer, no third-party packages.
 
 ---
