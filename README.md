@@ -2,11 +2,11 @@
 
 **Live URL:** [https://spk-smart.skripsian.site](https://spk-smart.skripsian.site)
 
-A web-based Decision Support System utilizing the **SMART** (Simple Multi Attribute Rating Technique) method for selecting airport tire suppliers. Built on a custom lightweight PHP MVC framework with **zero external dependencies** — no Composer, no third-party packages.
+Sistem Pendukung Keputusan berbasis web yang menggunakan metode **SMART** (Simple Multi Attribute Rating Technique) untuk pemilihan supplier ban bandara. Dibangun menggunakan framework PHP MVC ringan kustom dengan **zero dependencies** — tanpa Composer, tanpa package pihak ketiga.
 
 ---
 
-## Features
+## Fitur
 
 - **Dashboard Eksekutif**: Ringkasan data statistik dan aktivitas terbaru dalam satu tampilan.
 - **Manajemen Master Data**: CRUD untuk Supplier Ban Bandara dan Kriteria Penilaian (dengan penentuan bobot & tipe Benefit/Cost).
@@ -17,33 +17,33 @@ A web-based Decision Support System utilizing the **SMART** (Simple Multi Attrib
 
 ---
 
-## Prerequisites
+## Prasyarat
 
-- **PHP 8.1** or higher
-- **PDO extension** enabled (`php-pdo`)
-- **MySQL** (recommended) or **PostgreSQL**
-- Database driver extension (`php-mysql` or `php-pgsql`)
+- **PHP 8.1** atau lebih tinggi
+- Ekstensi **PDO** aktif (`php-pdo`)
+- **MySQL** (disarankan) atau **PostgreSQL**
+- Ekstensi driver database (`php-mysql` atau `php-pgsql`)
 
 ---
 
-## Initialization & Setup
+## Inisialisasi & Setup
 
-### Step 1: Clone the Repository
+### Langkah 1: Clone Repository
 
 ```bash
 git clone <repository-url> spk-smart
 cd spk-smart
 ```
 
-### Step 2: Configure Environment
+### Langkah 2: Konfigurasi Environment
 
-Copy the example environment file and edit your database credentials:
+Salin file environment contoh dan sesuaikan kredensial database:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your database settings:
+Edit `.env` dengan pengaturan database kamu:
 
 ```env
 DB_CONNECTION=mysql
@@ -54,38 +54,38 @@ DB_USER=root
 DB_PASS=root
 ```
 
-- Set `DB_CONNECTION` to `mysql` or `pgsql` depending on your database.
-- Create the database (`spk_smart` in the example above) before running migrations.
+- Atur `DB_CONNECTION` ke `mysql` atau `pgsql` sesuai database yang digunakan.
+- Buat database terlebih dahulu (`spk_smart` pada contoh di atas) sebelum menjalankan migrasi.
 
-### Step 3: Run Migrations
+### Langkah 3: Jalankan Migrasi
 
 ```bash
 php migrate.php
 ```
 
-This creates all required tables: `users`, `criteria`, `suppliers`, `evaluation_sessions`, `session_criteria`, `session_suppliers`, `session_scores`, and `session_evaluations`.
+Perintah ini membuat seluruh tabel yang diperlukan: `users`, `criteria`, `suppliers`, `evaluation_sessions`, `session_criteria`, `session_suppliers`, `session_scores`, dan `session_evaluations`.
 
-### Step 4: Run Seeders
+### Langkah 4: Jalankan Seeder
 
 ```bash
 php seed.php
 ```
 
-This command populates the database with initial dummy data for **Users**, **Suppliers**, and **Criteria**, so you can start using the application immediately.
+Perintah ini mengisi database dengan data awal untuk **Users**, **Suppliers**, dan **Criteria**, sehingga aplikasi dapat langsung digunakan.
 
-### Step 5: Start Development Server
+### Langkah 5: Jalankan Server Development
 
 ```bash
 php -S localhost:8080 -t public/
 ```
 
-Open `http://localhost:8080` in your browser.
+Buka `http://localhost:8080` di browser.
 
 ---
 
-## Default Login Credentials
+## Kredensial Login Default
 
-The following accounts are automatically created after running `php seed.php`:
+Akun berikut dibuat secara otomatis setelah menjalankan `php seed.php`:
 
 | Role | Username | Password |
 |------|----------|----------|
@@ -95,19 +95,19 @@ The following accounts are automatically created after running `php seed.php`:
 
 ---
 
-## Available CLI Commands
+## Perintah CLI yang Tersedia
 
-| Command | Description |
-|---------|-------------|
-| `php migrate.php` | Execute all pending database migrations in a transaction. Tracks executed migrations to avoid duplicates. |
-| `php make_migration.php <name>` | Generate a new timestamped migration file boilerplate in `database/migrations/`. Example: `php make_migration.php create_products_table` |
-| `php seed.php` | Execute all seeders in `database/seeders/` to populate the database with initial dummy data. |
+| Perintah | Deskripsi |
+|----------|-----------|
+| `php migrate.php` | Menjalankan seluruh migrasi database yang belum dieksekusi dalam satu transaksi. Mencatat migrasi yang sudah dijalankan untuk menghindari duplikasi. |
+| `php make_migration.php <name>` | Menghasilkan file migrasi baru yang sudah diberi timestamp di `database/migrations/`. Contoh: `php make_migration.php create_products_table` |
+| `php seed.php` | Menjalankan seluruh seeder di `database/seeders/` untuk mengisi database dengan data awal. |
 
 ---
 
-## Architecture Reference
+## Referensi Arsitektur
 
-This project is built on a custom native PHP MVC semi-framework. For deep technical specifications covering the core engine — including the custom PSR-4 Autoloader, Router, Query Builder, dual-database PDO layer, .env parser, and migration system — refer to the blueprint document:
+Proyek ini dibangun menggunakan native PHP MVC semi-framework kustom. Untuk spesifikasi teknis mendalam mengenai core engine — termasuk PSR-4 Autoloader kustom, Router, Query Builder, layer PDO dual-database, parser .env, dan sistem migrasi — lihat dokumen blueprint:
 
 **[`codebase.md`](codebase.md)**
 
@@ -136,42 +136,42 @@ Semua tabel menggunakan **UUID** sebagai primary key untuk mendukung skalabilita
 
 ---
 
-## Project Structure
+## Struktur Proyek
 
 ```
 /
 ├── app/
-│   ├── Controllers/          # Application controllers (Auth, Criteria, Dashboard, Profile, Session, Supplier, User)
-│   ├── Middleware/            # AuthMiddleware
-│   └── Models/              # Application models (User)
-├── core/                     # Framework engine (Autoload, Router, DB, Request, Response, Session, UUID, etc.)
+│   ├── Controllers/          # Controller aplikasi (Auth, Criteria, Dashboard, Profile, Session, Supplier, User)
+│   ├── Middleware/            # Middleware autentikasi
+│   └── Models/              # Model aplikasi (User)
+├── core/                     # Mesin framework (Autoload, Router, DB, Request, Response, Session, UUID, dll.)
 ├── database/
-│   ├── migrations/           # Database migration files
-│   └── seeders/              # Database seeders (User, Criteria, Supplier)
+│   ├── migrations/           # File migrasi database
+│   └── seeders/              # Seeder database (User, Criteria, Supplier)
 ├── public/
-│   ├── assets/              # Static assets (CSS, JS, images)
-│   ├── uploads/             # User uploads
-│   └── index.php            # Application entry point & routes
-├── views/                    # PHP view templates
-│   ├── auth/                # Login, Profile
-│   ├── criteria/            # Kriteria CRUD
-│   ├── dashboard/           # Dashboard index
-│   ├── layouts/             # Master, Footer, Sidebar
-│   ├── sessions/            # Sesi: index, create, input, result
-│   ├── suppliers/           # Supplier CRUD
-│   └── users/               # User management
-├── .env                      # Environment configuration (gitignored)
-├── .env.example              # Environment template
-├── .gitignore                # Git ignore rules
-├── codebase.md               # Technical blueprint
-├── make_migration.php        # Migration generator
-├── migrate.php               # Migration runner
-├── reset_database.php        # Database reset script
-└── README.md
+│   ├── assets/              # Asset statis (CSS, JS, gambar)
+│   ├── uploads/             # File upload pengguna
+│   └── index.php            # Entry point aplikasi & routing
+├── views/                    # Template tampilan PHP
+│   ├── auth/                # Halaman login & profil
+│   ├── criteria/            # CRUD kriteria
+│   ├── dashboard/           # Halaman dashboard
+│   ├── layouts/             # Layout master, footer, sidebar
+│   ├── sessions/            # Halaman sesi: daftar, buat, input, hasil
+│   ├── suppliers/           # CRUD supplier
+│   └── users/               # Manajemen pengguna
+├── .env                      # Konfigurasi environment (gitignored)
+├── .env.example              # Template environment
+├── .gitignore                # Aturan git ignore
+├── codebase.md               # Blueprint teknis
+├── make_migration.php        # Generator migrasi
+├── migrate.php               # Runner migrasi
+├── reset_database.php        # Script reset database
+└── README.md                   # Dokumentasi proyek
 ```
 
 ---
 
-## License
+## Lisensi
 
-This project is for internal/academic use.
+Proyek ini untuk keperluan internal/akademik.
